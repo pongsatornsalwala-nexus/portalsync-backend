@@ -22,12 +22,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-chang
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Dynamic ALLOWED_HOSTS configuration
-if os.environ.get('RENDER'):
-    # On Render: allow Render domains
-    ALLOWED_HOSTS = ['.onrender.com']
-else:
-    # Local development
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+
+# Add any custom domain from environment variable
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS.extend(os.environ.get('ALLOWED_HOSTS').split(','))
 
 
 # Application definition
