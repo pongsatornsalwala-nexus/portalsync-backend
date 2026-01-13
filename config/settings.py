@@ -21,12 +21,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-chang
 # NEW: Automatically set DEBUG=False in production
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# NEW: Allow Railway's domain + your local development
-ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1',
-    '.railway.app',  # This allows any Railway subdomain
-]
+# Get allowed hosts from environment variable, or use defaults
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# Add Render domain if we're on Render
+if os.environ.get('RENDER'):
+    ALLOWED_HOSTS.append('.onrender.com')
 
 
 # Application definition
