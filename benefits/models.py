@@ -1,6 +1,26 @@
 from django.db import models
 from employees.models import Employee
 
+class Hospital(models.Model):
+    """
+    Stores the official SSO hospital list (273 hospitals across Thailand)
+    """
+    name = models.CharField(max_length = 300, help_text = "Official hospital name in Thai")
+    province = models.CharField(max_length = 100, help_text = "Province where hospital is located")
+    hospital_type = models.CharField(
+        max_length = 10,
+        choices = [
+            ('PUBLIC', 'Public Hospital'),
+            ('PRIVATE', 'Private Hospital'),
+        ],
+        help_text = "Type of hospital"
+    )
+    class Meta:
+        ordering = ['province', 'name']
+        verbose_name_plural = "Hospitals"
+
+    def __str__(self):
+        return f"{self.name} ({self.province})"
 
 class BenefitQueue(models.Model):
     """

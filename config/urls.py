@@ -20,12 +20,13 @@ from rest_framework import routers
 from employees.views import EmployeeViewSet
 from worksites.views import WorksiteViewSet
 
-# Create a router and register our viewsets
+# Create a router and register the viewsets
 router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet, basename = 'employee')
 router.register(r'worksites', WorksiteViewSet, basename = 'worksite')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/benefits/', include('benefits.urls')),
     path('api/', include(router.urls)), # All API endpoints will be under /api/
 ]
