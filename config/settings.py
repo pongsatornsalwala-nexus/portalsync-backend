@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # NEW: Read from environment variable in production, fallback to this in development
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-change-this-in-production')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'a7zs4rvy=l_0etnpxi!$gi1an(ix2sn9po_&)(xmt$83958nbl')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # NEW: Automatically set DEBUG=False in production
@@ -171,6 +171,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React development server
     "http://127.0.0.1:3000",
+    "https://portalsync-frontend.vercel.app/"
 ]
 
 # NEW: In production, we'll add your Vercel URL here via environment variable
