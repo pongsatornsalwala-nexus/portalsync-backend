@@ -174,6 +174,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://portalsync-frontend.vercel.app/"
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
 # NEW: In production, we'll add your Vercel URL here via environment variable
 if os.environ.get('FRONTEND_URL'):
     CORS_ALLOWED_ORIGINS.append(os.environ.get('FRONTEND_URL'))
