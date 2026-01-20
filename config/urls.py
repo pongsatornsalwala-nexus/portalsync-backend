@@ -19,14 +19,16 @@ from django.urls import path, include
 from rest_framework import routers
 from employees.views import EmployeeViewSet
 from worksites.views import WorksiteViewSet
+from benefits.views import HospitalViewSet
 
 # Create a router and register the viewsets
 router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet, basename = 'employee')
 router.register(r'worksites', WorksiteViewSet, basename = 'worksite')
+router.register(r'hospitals', HospitalViewSet, basename = 'hospital')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/benefits/', include('benefits.urls')),
-    path('api/', include(router.urls)), # All API endpoints will be under /api/
+    # path('api/', include(router.urls)), # All API endpoints will be under /api/
 ]
