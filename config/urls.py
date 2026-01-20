@@ -29,6 +29,6 @@ router.register(r'hospitals', HospitalViewSet, basename = 'hospital')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/benefits/', include('benefits.urls')),
-    # path('api/', include(router.urls)), # All API endpoints will be under /api/
+    # path('api/benefits/', include('benefits.urls')),
+    path('api/', include(router.urls)), # All API endpoints will be under /api/
 ]
