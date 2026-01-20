@@ -55,8 +55,8 @@ class Employee(models.Model):
     nationality = models.CharField(max_length=50, default='Thai')
     
     # Bank Information
-    bank_name = models.CharField(max_length=100, blank=True)
-    bank_account = models.CharField(max_length=50, blank=True)
+    bank_name = models.CharField(max_length=100, null=True, blank=True)
+    bank_account = models.CharField(max_length=50, null=True, blank=True)
     
     # Employment Information
     employment_date = models.DateField()
