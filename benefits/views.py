@@ -9,6 +9,14 @@ from .serializers import HospitalSerializer
 
 # Create your views here.
 
+class HospitalViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for Hospital model.
+    Automatically provides list, create, retrieve, update, and destroy acitons.
+    """
+    queryset = Hospital.objects.all()
+    serializer_class = HospitalSerializer
+
 # The decorator
 # Says "This view only accepts GET requests"
 # Like saying "This is a read-only endpoint, no POST/PUT/DELETE"
