@@ -53,7 +53,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'id',
             'id_card',
             'first_name',
-            'last_name'
+            'last_name',
             'full_name',
             'worksite',
             'worksite_name',
