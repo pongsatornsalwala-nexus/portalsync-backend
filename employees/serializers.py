@@ -52,9 +52,13 @@ class EmployeeListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'id_card',
+            'first_name',
+            'last_name'
             'full_name',
+            'worksite',
             'worksite_name',
             'benefit_type',
             'status',
             'employment_date',
+            'department',
         ]
