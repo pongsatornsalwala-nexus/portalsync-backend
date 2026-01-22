@@ -78,6 +78,52 @@ class Employee(models.Model):
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    #SSF-specific Fields
+    hospital_choice_1 = models.CharField(
+        max_length = 200,
+        blank = True,
+        null = True,
+        help_text = "Primary hospital choice for SSF"
+    )
+
+    hospital_choice_2 = models.CharField(
+        max_length = 200,
+        blank = True,
+        null = True,
+        help_text = "Secondary hospital choice for SSF"
+    )
+
+    hospital_choice_3 = models.CharField(
+        max_length = 200,
+        blank = True,
+        null = True,
+        help_text = "Tertiary hospital choice for SSF"
+    )
+
+    marital_status = models.CharField(
+        max_length = 20,
+        blank = True,
+        null = True,
+        choices = [
+            ('single', 'Single'),
+            ('married', 'Married'),
+            ('widowed', 'Widowed'),
+            ('divorced', 'Divorced'),
+            ('separated', 'Separated'),
+            ('other', 'Other'),
+        ]
+    )
+
+    wage_type = models.CharField(
+        max_length = 20,
+        blank = True,
+        null = True,
+        choices = [
+            ('daily', 'Daily'),
+            ('monthly', 'Monthly')
+        ]
+    )
     
     class Meta:
         ordering = ['-created_at']
