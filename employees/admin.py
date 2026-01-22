@@ -21,7 +21,7 @@ class EmployeeAdmin(admin.ModelAdmin):
         ('SSF Hospital Choices', {
             'fields': ('hospital_choice_1', 'hospital_choice_2', 'hospital_choice_3'),
             'classes': ('collapse,'),
-        })
+        }),
         ('Banking', {
             'fields': ('bank_name', 'bank_account')
         }),
