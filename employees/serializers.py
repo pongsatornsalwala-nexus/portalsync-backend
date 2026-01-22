@@ -42,6 +42,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'hospital_choice_3',
             'marital_status',
             'wage_type',
+            'prefix',
+            'passport',
+            'designation',
         ]
         read_only_fields = ['id', 'full_name', 'created_at', 'updated_at']
 
@@ -67,4 +70,5 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'employment_date',
             'department',
             'hospital_choice_1',
+            'prefix',
         ]

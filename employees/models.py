@@ -124,6 +124,35 @@ class Employee(models.Model):
             ('monthly', 'Monthly')
         ]
     )
+
+    # AIA-specific Fields
+    prefix = models.CharField(
+        max_length = 10,
+        blank = True,
+        null = True,
+        choices = [
+            ('mr', 'Mr.'),
+            ('mrs', 'Mrs.'),
+            ('ms', 'Ms.'),
+            ('dr', 'Dr.'),
+            ('prof', 'Prof.'),
+        ],
+        help_text = "Title prefix for AIA enrollment"
+    )
+
+    passport = models.CharField(
+        max_length = 20,
+        blank = True,
+        null = True,
+        help_text = "Passport number for non-Thai nationals"
+    )
+
+    designation = models.CharField(
+        max_length = 100,
+        blank = True,
+        null = True,
+        help_text = "Job title/position (AIA)"
+    )
     
     class Meta:
         ordering = ['-created_at']
