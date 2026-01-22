@@ -10,14 +10,18 @@ class EmployeeAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Personal Information', {
-            'fields': ('id_card', 'first_name', 'last_name', 'date_of_birth', 'gender', 'nationality')
+            'fields': ('id_card', 'first_name', 'last_name', 'date_of_birth', 'gender', 'nationality', 'marital_status')
         }),
         ('Employment', {
-            'fields': ('worksite', 'employment_date', 'employee_no', 'department', 'salary', 'plan')
+            'fields': ('worksite', 'employment_date', 'employee_no', 'department', 'salary', 'plan', 'wage_type')
         }),
         ('Benefits', {
             'fields': ('benefit_type', 'registration_type', 'status', 'effective_date')
         }),
+        ('SSF Hospital Choices', {
+            'fields': ('hospital_choice_1', 'hospital_choice_2', 'hospital_choice_3'),
+            'classes': ('collapse,'),
+        })
         ('Banking', {
             'fields': ('bank_name', 'bank_account')
         }),
