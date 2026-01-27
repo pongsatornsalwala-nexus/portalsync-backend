@@ -10,7 +10,7 @@ class EmployeeAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Personal Information', {
-            'fields': ('id_card', 'first_name', 'last_name', 'date_of_birth', 'gender', 'nationality', 'marital_status')
+            'fields': ('id_card', 'prefix', 'first_name', 'last_name', 'date_of_birth', 'gender', 'nationality', 'marital_status')
         }),
         ('Employment', {
             'fields': ('worksite', 'employment_date', 'employee_no', 'department', 'salary', 'plan', 'wage_type')
@@ -23,7 +23,7 @@ class EmployeeAdmin(admin.ModelAdmin):
             'classes': ('collapse',),
         }),
         ('AIA Information', {
-            'fields': ('prefix', 'passport', 'designation'),
+            'fields': ('passport', 'designation'),
             'classes': ('collapse',),
         }),
         ('Banking', {

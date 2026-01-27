@@ -15,6 +15,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'id_card',
+            'prefix',
             'first_name',
             'last_name',
             'full_name',
@@ -42,7 +43,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'hospital_choice_3',
             'marital_status',
             'wage_type',
-            'prefix',
             'passport',
             'designation',
         ]
@@ -60,6 +60,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'id_card',
+            'prefix',
             'first_name',
             'last_name',
             'full_name',
@@ -70,7 +71,6 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'bank_name',
             'bank_account',
             'passport',
-            'prefix',
             'worksite',
             'worksite_name',
             'benefit_type',
@@ -78,4 +78,5 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'employment_date',
             'department',
             'hospital_choice_1',
+
         ]

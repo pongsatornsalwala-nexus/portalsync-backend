@@ -48,6 +48,17 @@ class Employee(models.Model):
     
     # Personal Information
     id_card = models.CharField(max_length=17, unique=True, help_text="13-digit Thai ID in X-XXXX-XXXXX-XX-X format")
+    prefix = models.CharField(
+    max_length = 10,
+    blank = True,
+    null = True,
+    choices = [
+        ('mr', 'Mr.'),
+        ('mrs', 'Mrs.'),
+        ('ms', 'Ms.'),
+    ],
+    help_text = "Title prefix for AIA enrollment"
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -126,19 +137,6 @@ class Employee(models.Model):
     )
 
     # AIA-specific Fields
-    prefix = models.CharField(
-        max_length = 10,
-        blank = True,
-        null = True,
-        choices = [
-            ('mr', 'Mr.'),
-            ('mrs', 'Mrs.'),
-            ('ms', 'Ms.'),
-            ('dr', 'Dr.'),
-            ('prof', 'Prof.'),
-        ],
-        help_text = "Title prefix for AIA enrollment"
-    )
 
     passport = models.CharField(
         max_length = 20,
