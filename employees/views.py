@@ -66,26 +66,26 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         # SSF queue counts
         ssf_register_in = self.queryset.filter(
-            benefit_type = 'SSF',
+            has_ssf = True,
             registration_type = 'REGISTER_IN',
             status__in = ['ENTRY', 'PENDING', 'REVIEWING']
         ).count()
 
         ssf_register_out = self.queryset.filter(
-            benefit_type = 'SSF',
+            has_ssf = True,
             registration_type = 'REGISTER_OUT',
             status__in = ['ENTRY', 'PENDING', 'REVIEWING']
         ).count()
 
         # AIA queue counts
         aia_register_in = self.queryset.filter(
-            benefit_type = 'AIA',
+            has_aia = True,
             registration_type = 'REGISTER_IN',
             status__in = ['ENTRY', 'PENDING', 'REVIEWING']
         ).count()
 
         aia_register_out = self.queryset.filter(
-            benefit_type = 'AIA',
+            has_aia = True,
             registration_type = 'REGISTER_OUT',
             status__in = ['ENTRY', 'PENDING', 'REVIEWING']
         ).count()

@@ -48,4 +48,11 @@ class BenefitQueue(models.Model):
         verbose_name_plural = "Benefit Queues"
         
     def __str__(self):
-        return f"{self.employee.full_name} - {self.employee.benefit_type} Queue"
+        benefit_types = []
+        if self.employee.has_ssf:
+            benefit_types.append("SSF")
+        if self.employee.has_aia:
+            benefit_types.append("AIA")
+
+        benefit_str = " & ".join(benefit_types) if benefit_types else "No Benefits"
+        return f"{self.employee.full_name} - {benefit_str} Queue"

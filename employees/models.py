@@ -78,7 +78,8 @@ class Employee(models.Model):
     
     # Worksite & Benefits
     worksite = models.ForeignKey(Worksite, on_delete=models.PROTECT, related_name='employees')
-    benefit_type = models.CharField(max_length=10, choices=BENEFIT_CHOICES, default=BENEFIT_SSF)
+    has_ssf = models.BooleanField(default=False, help_text="Enroled in Social Security")
+    has_aia = models.BooleanField(default=False, help_text="Enrolled in AIA Group")
     registration_type = models.CharField(max_length=20, choices=REGISTRATION_CHOICES, default=REGISTER_IN)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ENTRY)
     
@@ -156,7 +157,7 @@ class Employee(models.Model):
         ordering = ['-created_at']
         indexes = [
             models.Index(fields=['id_card']),
-            models.Index(fields=['worksite', 'benefit_type']),
+            models.Index(fields=['worksite', 'has_ssf', 'has_aia']),
             models.Index(fields=['status']),
         ]
         
