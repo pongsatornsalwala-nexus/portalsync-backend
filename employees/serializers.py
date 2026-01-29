@@ -80,5 +80,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'employment_date',
             'department',
             'hospital_choice_1',
-
+            'hospital_choice_2',
+            'hospital_choice_3',
+            'wage_type',
         ]
