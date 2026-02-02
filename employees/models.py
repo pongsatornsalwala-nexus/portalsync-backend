@@ -82,6 +82,8 @@ class Employee(models.Model):
     has_aia = models.BooleanField(default=False, help_text="Enrolled in AIA Group")
     registration_type = models.CharField(max_length=20, choices=REGISTRATION_CHOICES, default=REGISTER_IN)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ENTRY)
+    ssf_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="SSF registration status (null if not enrolled)")
+    aia_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="AIA registration status (null if not enrolled)")
     
     # Additional Fields
     effective_date = models.DateField(null=True, blank=True, help_text="Date when benefit becomes effective")
@@ -152,6 +154,28 @@ class Employee(models.Model):
         null = True,
         help_text = "Job title/position (AIA)"
     )
+
+    def save(self, *args, **kwargs):
+        """
+        Override save to automatically set status fields based on enrollment.
+        - If has_ssf is True and ssf_status is None, set to ENTRY
+        - If has_aia is True and aia_status is None, set to ENTRY
+        - If has_ssf is False, clear ssf_status
+        - If has_aia is False, clear aia_status
+        """
+        # Auto-initialize SSF status
+        if self.has_ssf and self.ssf_status is None:
+            self.ssf_status = self.STATUS_ENTRY
+        elif not self.has_ssf:
+            self.ssf_status = None
+
+        # Auto-initialize AIA status
+        if self.has_aia and self.aia_status is None:
+            self.aia_status = self.STATUS_ENTRY
+        elif not self.has_aia:
+            self.aia_status = None
+
+        super().save(*args, **kwargs)
     
     class Meta:
         ordering = ['-created_at']
