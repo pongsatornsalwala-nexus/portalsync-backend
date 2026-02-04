@@ -78,6 +78,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'worksite_name',
             'has_ssf',
             'has_aia',
+            'registration_type',
             'status',
             'ssf_status',
             'aia_status',
