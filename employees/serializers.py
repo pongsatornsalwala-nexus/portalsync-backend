@@ -81,7 +81,6 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'has_ssf',
             'has_aia',
             'registration_type',
-            'processing_out_of',
             'status',
             'ssf_status',
             'aia_status',
