@@ -81,6 +81,7 @@ class Employee(models.Model):
     has_ssf = models.BooleanField(default=False, help_text="Enroled in Social Security")
     has_aia = models.BooleanField(default=False, help_text="Enrolled in AIA Group")
     registration_type = models.CharField(max_length=20, choices=REGISTRATION_CHOICES, default=REGISTER_IN)
+    processing_out_of = models.CharField(max_length=20, choices=BENEFIT_CHOICES, null=True, blank=True, help_text="Tracks which benefit the employee is exiting from (SSF or AIA)")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ENTRY)
     ssf_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="SSF registration status (null if not enrolled)")
     aia_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="AIA registration status (null if not enrolled)")
