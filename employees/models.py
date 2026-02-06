@@ -89,10 +89,17 @@ class Employee(models.Model):
         default=False,
         help_text="True if employee is currently exiting from AIA benefit"
     )
-    is_archived = models.BooleanField(
+
+    ssf_archived = models.BooleanField(
         default=False,
-        help_text="True if employee exit has been officially confirmed and archived"
+        help_text="True if SSF exit has been officially confirmed and archived"
     )
+
+    aia_archived = models.BooleanField(
+        default=False,
+        help_text="True if AIA exit has been officially confirmed and archived"
+    )
+
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ENTRY)
     ssf_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="SSF registration status (null if not enrolled)")
     aia_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="AIA registration status (null if not enrolled)")
