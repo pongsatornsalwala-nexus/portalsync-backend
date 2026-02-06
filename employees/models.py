@@ -90,6 +90,16 @@ class Employee(models.Model):
         help_text="True if employee is currently exiting from AIA benefit"
     )
 
+    ssf_activated = models.BooleanField(
+        default=False,
+        help_text="True if SSF registration has been officially confirmed and activated"
+    )
+
+    aia_activated = models.BooleanField(
+        default=False,
+        help_text="True if AIA registration has been officially confirmed and activated"
+    )
+
     ssf_archived = models.BooleanField(
         default=False,
         help_text="True if SSF exit has been officially confirmed and archived"
