@@ -187,10 +187,6 @@ class Employee(models.Model):
     def save(self, *args, **kwargs):
         """
         Override save to automatically set status fields based on enrollment.
-        - If has_ssf is True and ssf_status is None, set to ENTRY
-        - If has_aia is True and aia_status is None, set to ENTRY
-        - If has_ssf is False, clear ssf_status
-        - If has_aia is False, clear aia_status
         """
         # Auto-initialize SSF status
         if self.has_ssf and self.ssf_status is None:
@@ -203,6 +199,15 @@ class Employee(models.Model):
             self.aia_status = self.STATUS_ENTRY
         elif not self.has_aia:
             self.aia_status = None
+
+        # Auto-archive when employee exits a benefit
+        # If they're exiting and it's been verified, mark as archived
+        if self.is_exiting_ssf and self.ssf_status == self.STATUS_VERIFIED and not self.has_ssf:
+            self.ssf_archived = True
+
+        # If they're exiting AIA and it's been verified, mark as archived
+        if self.is_exiting_aia and self.aia_status == self.STATUS_VERIFIED and not self.has_aia:
+            self.aia_archived = True
 
         super().save(*args, **kwargs)
     
