@@ -119,3 +119,37 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(employees, many = True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def download_template(self, request):
+        """
+        GET /api/employees/download_template/
+        Downloads the Excel template for batch upload
+        """
+        import os
+        from django.http import FileResponse
+        from django.conf import settings
+
+        # Build the path to the template file
+        template_path = os.path.join(
+            setting.BASE_DIR,
+            'employees',
+            'templates',
+            'SSF_AIA_BULK_IMPORT_TEMPLATE.xlsx'
+        )
+
+        if not os.path.exists(template_path):
+            return Response(
+                {'error': 'Template file not found.'},
+                status = status.HTTP_404_NOT_FOUND
+            )
+
+        # Open and return the file
+        file = open(template_path, 'rb')
+        response = FileResponse(
+            file,
+            content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment;  filename="SSF_AIA_Bulk_Import_Template.xlsx"'
+
+        return response
