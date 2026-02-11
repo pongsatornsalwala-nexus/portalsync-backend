@@ -135,7 +135,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             settings.BASE_DIR,
             'employees',
             'templates',
-            'SSF_AIA_BULK_IMPORT_TEMPLATE.xlsx'
+            'SSF_AIA_Bulk_Import_Template.xlsx'
         )
 
         if not os.path.exists(template_path):
