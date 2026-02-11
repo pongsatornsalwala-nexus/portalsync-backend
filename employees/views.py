@@ -133,9 +133,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         # Build the path to the template file
         template_path = os.path.join(
             settings.BASE_DIR,
-            'employees',
             'templates',
-            'SSF_AIA_Bulk_Import_Template.xlsx'
+            'SSF AIA Bulk Import Template.xlsx'
         )
 
         if not os.path.exists(template_path):
