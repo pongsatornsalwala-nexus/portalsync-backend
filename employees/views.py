@@ -132,7 +132,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         # Build the path to the template file
         template_path = os.path.join(
-            setting.BASE_DIR,
+            settings.BASE_DIR,
             'employees',
             'templates',
             'SSF_AIA_BULK_IMPORT_TEMPLATE.xlsx'
