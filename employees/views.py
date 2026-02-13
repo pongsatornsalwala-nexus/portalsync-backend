@@ -189,83 +189,62 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             created_count = 0
             errors = []
 
+            # Parse date: "25/6/2547" -> convert Buddhist year to Gregorian
+            def parse_buddhist_date(date_str):
+                if not date_str:
+                    return None
+                try:
+                    # Handle different formats
+                    if isinstance(date_str, str):
+                        parts = date_str.split('/')
+                        if len(parts) == 3:
+                            day = int(parts[0])
+                            month = int(parts[1])
+                            year = int(parts[2]) - 543 # Convert Buddhist to Gregorian
+                            return f'{year:04d}-{month:02d}-{day:02d}'
+                    return None
+                except:
+                    return None
+
             # Start reading from row 5 (skip header rows 1-4)
             for row_num in range(5, ws.max_row + 1):
                 try:
                     # Read data from each column
-                    full_name = ws[f'B{row_num}'].value # Name
-                    national_id = ws[f'D{row_num}'].value # National ID
-                    hospital1 = ws[f'E{row_num}'].value # Hospital Choice 1
-                    hospital2 = ws[f'F{row_num}'].value # Hospital Choice 2
-                    hospital3 = ws[f'G{row_num}'].value # Hospital Choice 3
-                    dob = ws[f'H{row_num}'].value # Date of Birth (Buddhist Era)
-                    employment_date = ws[f'I{row_num}'].value # Employment Date (Buddhist Era)
+                    prefix_thai = ws.cell(row=row_num, column=2).value # B - คำนำหน้า
+                    first_name = ws.cell(row=row_num, column=3).value # C - ชื่อ
+                    last_name = ws.cell(row=row_num, column=4).value # D - นามสกุล
+                    national_id = ws.cell(row=row_num, column=6).value # F - เลขประจำตัวประชาชน
+                    hospital1 = ws.cell(row=row_num, column=7).value # G - โรงพยาบาล 1
+                    hospital2 = ws.cell(row=row_num, column=8).value # H - โรงพยาบาล 2
+                    hospital3 = ws.cell(row=row_num, column=9).value # I - โรงพยาบาล 3
+                    dob = ws.cell(row=row_num, column=10).value # J - วันเกิด
+                    employment_date = ws.cell(row=row_num, column=11).value # K - วันเริ่มงาน
 
                     # Skip empty rows
                     if not full_name or not national_id:
                         continue
 
-                    # Parse name: "นาย test test" -> prefix="mr", firstName="test", lastName="test"abs
-                    prefix = None
-                    first_name = None
-                    last_name = None
-
-                    if full_name:
-                        name_parts = str(full_name).strip().split()
-                        if len(name_parts) >= 3:
-                            # Has prefix
-                            prefix_thai = name_parts[0]
-                            if prefix_thai == 'นาย':
-                                prefix = 'mr'
-                            elif prefix_thai == 'นาง':
-                                prefix = 'mrs'
-                            elif prefix_thai == 'นางสาว':
-                                prefix = 'ms'
-
-                            first_name = name_parts[1]
-                            last_name = ' '.join(name_parts[2:])
-                        elif len(name_parts) == 2:
-                            # No prefix
-                            first_name = name_parts[0]
-                            last_name = name_parts[1]
-                        else:
-                            # Single name
-                            first_name = name_parts[0]
-                            last_name = ''
+                    # Map Thai prefix to English
+                    prefix_map = {
+                        'นาย': 'mr',
+                        'นาง': 'mrs',
+                        'นางสาว': 'ms',
+                    }
+                    prefix = prefix_map.get(str(prefix_thai).strip()) if prefix_thai else None
                     
                     # Determine gender from prefix
                     gender = 'male' if prefix == 'mr' else 'female'
-
-                    # Parse date: "25/6/2547" -> convert Buddhist year to Gregorian
-                    def parse_buddhist_date(date_str):
-                        if not date_str:
-                            return None
-                        try:
-                            # Handle different formats
-                            if isinstance(date_str, str):
-                                parts = date_str.split('/')
-                                if len(parts) == 3:
-                                    day = int(parts[0])
-                                    month = int(parts[1])
-                                    year = int(parts[2]) - 543 # Convert Buddhist to Gregorian
-                                    return f'{year:04d}-{month:02d}-{day:02d}'
-                            return None
-                        except:
-                            return None
-
-                    date_of_birth = parse_buddhist_date(dob)
-                    employment_date_parsed = parse_buddhist_date(employment_date)
 
                     # Create employee
                     employee_data = {
                         'id_card': str(national_id).replace('-', ''),
                         'prefix': prefix,
-                        'first_name': first_name,
-                        'last_name': last_name,
-                        'date_of_birth': date_of_birth,
+                        'first_name': str(first_name).strip(),
+                        'last_name': str(last_name).strip() if last_name else '',
+                        'date_of_birth': parse_buddhist_date(dob),
                         'gender': gender,
                         'nationality': 'thai',
-                        'employment_date': employment_date_parsed or datetime.now().date(),
+                        'employment_date': parse_buddhist_date(employment_date) or datetime.now().date(),
                         'worksite': int(worksite_id),
                         'has_ssf': benefit_type == 'SSF',
                         'has_aia': benefit_type == 'AIA',
