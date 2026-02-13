@@ -221,7 +221,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     employment_date = ws.cell(row=row_num, column=11).value # K - วันเริ่มงาน
 
                     # Skip empty rows
-                    if not full_name or not national_id:
+                    if not first_name or not national_id:
                         continue
 
                     # Map Thai prefix to English
