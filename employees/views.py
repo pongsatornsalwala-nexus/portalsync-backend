@@ -245,7 +245,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                         'gender': gender,
                         'nationality': 'thai',
                         'employment_date': parse_buddhist_date(employment_date) or datetime.now().date(),
-                        'worksite': int(worksite_id),
+                        'worksite_id': int(worksite_id),
                         'has_ssf': benefit_type == 'SSF',
                         'has_aia': benefit_type == 'AIA',
                         'registration_type': registration_type,
