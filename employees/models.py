@@ -25,17 +25,13 @@ class Employee(models.Model):
     ]
     
     # Status Choices
-    STATUS_ENTRY = 'ENTRY'
+    STATUS_IMPORTED = 'IMPORTED'
     STATUS_PENDING = 'PENDING'
-    STATUS_REVIEWING = 'REVIEWING'
-    STATUS_REPORTED = 'REPORTED'
-    STATUS_VERIFIED = 'VERIFIED'
+    STATUS_REGISTERED = 'REGISTERED'
     STATUS_CHOICES = [
-        (STATUS_ENTRY, 'Entry'),
+        (STATUS_IMPORTED, 'Imported'),
         (STATUS_PENDING, 'Pending'),
-        (STATUS_REVIEWING, 'Reviewing'),
-        (STATUS_REPORTED, 'Reported'),
-        (STATUS_VERIFIED, 'Verified'),
+        (STATUS_REGISTERED, 'Registered')
     ]
     
     # Gender Choices
@@ -110,7 +106,7 @@ class Employee(models.Model):
         help_text="True if AIA exit has been officially confirmed and archived"
     )
 
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ENTRY)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_IMPORTED)
     ssf_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="SSF registration status (null if not enrolled)")
     aia_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="AIA registration status (null if not enrolled)")
     
@@ -187,27 +183,39 @@ class Employee(models.Model):
     def save(self, *args, **kwargs):
         """
         Override save to automatically set status fields based on enrollment.
+        - Respects status passed in from Excel (only defaults if None)
+        - Auto-computes general status as the least advanced of SSF/AIA
         """
-        # Auto-initialize SSF status
+        # Auto-initialize SSF status only if not already set
         if self.has_ssf and self.ssf_status is None:
-            self.ssf_status = self.STATUS_ENTRY
+            self.ssf_status = self.STATUS_IMPORTED
         elif not self.has_ssf:
             self.ssf_status = None
 
-        # Auto-initialize AIA status
+        # Auto-initialize AIA status only if not already set
         if self.has_aia and self.aia_status is None:
-            self.aia_status = self.STATUS_ENTRY
+            self.aia_status = self.STATUS_IMPORTED
         elif not self.has_aia:
             self.aia_status = None
 
-        # Auto-archive when employee exits a benefit
-        # If they're exiting and it's been verified, mark as archived
-        if self.is_exiting_ssf and self.ssf_status == self.STATUS_VERIFIED and not self.has_ssf:
+        # Auto-archive logic updated to use REGISTERED
+        if self.is_exiting_ssf and self.ssf_status == self.STATUS_REGISTERED and not self.has_ssf:
             self.ssf_archived = True
-
-        # If they're exiting AIA and it's been verified, mark as archived
-        if self.is_exiting_aia and self.aia_status == self.STATUS_VERIFIED and not self.has_aia:
+        if self.is_exiting_aia and self.aia_status == self.STATUS_REGISTERED and not self.has_aia:
             self.aia_archived = True
+
+        # Auto-compute general status as least advanced of SSF/AIA
+        stage_order = [
+            self.STATUS_IMPORTED,
+            self.STATUS_PENDING,
+            self.STATUS_REGISTERED
+        ]
+        active_statuses = [s for s in [self.ssf_status, self.aia_status] if s is not None]
+        if active_statuses:
+            # Find the one with the lowest index in stage_order
+            self.status = min(active_statuses, key=lambda s: stage_order.index(s) if s in stage_order else 0)
+        else:
+            self.status = self.STATUS_IMPORTED # fallback
 
         super().save(*args, **kwargs)
     
