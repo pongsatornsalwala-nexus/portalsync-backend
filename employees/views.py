@@ -62,32 +62,32 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         ).count()
 
         # Pending actions (not yet verified)
-        pending = self.queryset.exclude(status = 'VERIFIED').count()
+        pending = self.queryset.exclude(status = 'REGISTERED').count()
 
         # SSF queue counts
         ssf_register_in = self.queryset.filter(
             has_ssf = True,
             registration_type = 'REGISTER_IN',
-            status__in = ['ENTRY', 'PENDING', 'REVIEWING']
+            status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         ssf_register_out = self.queryset.filter(
             has_ssf = True,
             registration_type = 'REGISTER_OUT',
-            status__in = ['ENTRY', 'PENDING', 'REVIEWING']
+            status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         # AIA queue counts
         aia_register_in = self.queryset.filter(
             has_aia = True,
             registration_type = 'REGISTER_IN',
-            status__in = ['ENTRY', 'PENDING', 'REVIEWING']
+            status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         aia_register_out = self.queryset.filter(
             has_aia = True,
             registration_type = 'REGISTER_OUT',
-            status__in = ['ENTRY', 'PENDING', 'REVIEWING']
+            status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         return Response({
@@ -213,16 +213,27 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     prefix_thai = ws.cell(row=row_num, column=2).value # B - คำนำหน้า
                     first_name = ws.cell(row=row_num, column=3).value # C - ชื่อ
                     last_name = ws.cell(row=row_num, column=4).value # D - นามสกุล
+                    ssf_status_raw = ws.cell(row=row_num, column=5).value # E - SSF แจ้งเข้า
                     national_id = ws.cell(row=row_num, column=6).value # F - เลขประจำตัวประชาชน
                     hospital1 = ws.cell(row=row_num, column=7).value # G - โรงพยาบาล 1
                     hospital2 = ws.cell(row=row_num, column=8).value # H - โรงพยาบาล 2
                     hospital3 = ws.cell(row=row_num, column=9).value # I - โรงพยาบาล 3
                     dob = ws.cell(row=row_num, column=10).value # J - วันเกิด
                     employment_date = ws.cell(row=row_num, column=11).value # K - วันเริ่มงาน
+                    aia_status_raw = ws.cell(row=row_num, column=12).value # L - AIA
 
                     # Skip empty rows
                     if not first_name or not national_id:
                         continue
+
+                    # Map Excel status values to Django status values
+                    status_map = {
+                        'Imported': 'IMPORTED',
+                        'Pending': 'PENDING',
+                        'Registered': 'REGISTERED'
+                    }
+                    ssf_status = status_map.get(str(ssf_status_raw).strip()) if ssf_status_raw else 'IMPORTED'
+                    aia_status = status_map.get(str(aia_status_raw).strip()) if aia_status_raw else 'IMPORTED'
 
                     # Map Thai prefix to English
                     prefix_map = {
@@ -252,6 +263,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                         'hospital_choice_1': hospital1,
                         'hospital_choice_2': hospital2,
                         'hospital_choice_3': hospital3,
+                        'ssf_status': ssf_status if benefit_type == 'SSF' else None,
+                        'aia_status': aia_status if benefit_type == 'AIA' else None,
                     }
 
                     # Create the employee
