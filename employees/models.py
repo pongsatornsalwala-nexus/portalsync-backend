@@ -74,7 +74,7 @@ class Employee(models.Model):
     
     # Worksite & Benefits
     worksite = models.ForeignKey(Worksite, on_delete=models.PROTECT, related_name='employees')
-    has_ssf = models.BooleanField(default=False, help_text="Enroled in Social Security")
+    has_ssf = models.BooleanField(default=False, help_text="Enrolled in Social Security")
     has_aia = models.BooleanField(default=False, help_text="Enrolled in AIA Group")
     registration_type = models.CharField(max_length=20, choices=REGISTRATION_CHOICES, default=REGISTER_IN)
     is_exiting_ssf = models.BooleanField(
