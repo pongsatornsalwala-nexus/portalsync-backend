@@ -112,4 +112,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'hospital_choice_2',
             'hospital_choice_3',
             'wage_type',
+            'national_id_file',
+            'bank_book_file',
+            'ceb_form_file',
         ]
