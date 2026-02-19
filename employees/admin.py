@@ -33,4 +33,8 @@ class EmployeeAdmin(admin.ModelAdmin):
             'fields': ('resign_reason',),
             'classes': ('collapse',)
         }),
+        ('Document Uploads', {
+            'fields': ('national_id_file', 'bank_book_file', 'ceb_form_file'),
+            'classes': ('collapse',),
+        }),
     )
