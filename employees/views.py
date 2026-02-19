@@ -286,3 +286,55 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 {'error': f'Failed to process file: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+    
+    @action(detail=True, methods=['patch'])
+    def upload_document(self, request, pk=None):
+        """
+        PATCH /api/employees/{id}/upload_document/
+        Upload a document file for an employee
+        Expects: file (the file), file_type ('national_id', 'bank_book', 'ceb_form')
+        """
+        employee = self.get_object()
+
+        # Get the uploaded file
+        uploaded_file = request.FILES.get('file')
+        file_type = request.data.get('file_type')
+
+        if not uploaded_file:
+            return Response(
+                {'error': 'No file uploaded'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not file_type:
+            return Response(
+                {'error': 'file_type parameter is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Map file_type to model field
+        field_mapping = {
+            'national_id': 'national_id_file',
+            'bank_book': 'bank_book_file',
+            'ceb_form': 'ceb_form_file',
+        }
+
+        field_name = field_mapping.get(file_type)
+        if not field_name:
+            return Response(
+                {'error': f'Invalid file_type: {file_type}'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Delete old file if it exists
+        old_file = getattr(employee, field_name)
+        if old_file:
+            old_file.delete(save=False)
+        
+        # Save the new file
+        setattr(employee, field_name, uploaded_file)
+        employee.save()
+
+        # Return updated employee data
+        serializer = self.get_serializer(employee)
+        return Response(serializer.data)

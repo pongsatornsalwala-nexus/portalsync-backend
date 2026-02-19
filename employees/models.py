@@ -180,6 +180,29 @@ class Employee(models.Model):
         help_text = "Job title/position (AIA)"
     )
 
+
+    # AIA Document Uploads
+    national_id_file = models.FileField(
+        upload_to='employee_documents/national_ids/',
+        blank=True,
+        null=True,
+        help_text="National ID card scan/photo"
+    )
+
+    bank_book_file = models.FileField(
+        upload_to='employee_documents/bank_books/',
+        blank=True,
+        null=True,
+        help_text="Bank book cover page"
+    )
+
+    ceb_form_file = models.FileField(
+        upload_to='employee_documents/ceb_forms/',
+        blank=True,
+        null=True,
+        help_text="AIA CEB enrollment form"
+    )
+
     def save(self, *args, **kwargs):
         """
         Override save to automatically set status fields based on enrollment.

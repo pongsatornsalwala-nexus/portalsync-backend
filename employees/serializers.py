@@ -54,6 +54,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'wage_type',
             'passport',
             'designation',
+            'national_id_file',
+            'bank_book_file',
+            'ceb_form_file',
         ]
         read_only_fields = ['id', 'full_name', 'created_at', 'updated_at']
 
@@ -81,6 +84,9 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'bank_account',
             'passport',
             'designation',
+            'national_id_file',
+            'bank_book_file',
+            'ceb_form_file',
             'worksite',
             'worksite_name',
             'has_ssf',
