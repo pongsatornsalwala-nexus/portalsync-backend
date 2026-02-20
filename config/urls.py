@@ -20,6 +20,8 @@ from rest_framework import routers
 from employees.views import EmployeeViewSet
 from worksites.views import WorksiteViewSet
 from benefits.views import HospitalViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Create a router and register the viewsets
 router = routers.DefaultRouter()
@@ -32,3 +34,5 @@ urlpatterns = [
     # path('api/benefits/', include('benefits.urls')),
     path('api/', include(router.urls)), # All API endpoints will be under /api/
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
