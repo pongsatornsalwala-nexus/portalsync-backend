@@ -11,7 +11,33 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     Provides CRUD operations plus custom endpoints for dashboard stats.
     """
-    queryset = Employee.objects.select_related('worksite').all()
+    def get_queryset(self):
+        queryset = Employee.objects.select_related('worksite').all()
+
+        reg_type = self.request.query_params.get('registration_type')
+        month = self.request.query_params.get('month')
+        worksite_id = self.request.query_params.get('worksite')
+        benefit = self.request.query_params.get('benefit')
+
+        if reg_type:
+            queryset = queryset.filter(registration_type=reg_type)
+
+        if month:
+            year, mon = month.split('-')
+            queryset = queryset.filter(
+                created_at__year=year,
+                created_at__month=mon
+            )
+
+        if worksite_id:
+            queryset = queryset.filter(worksite_id=worksite_id)
+
+        if benefit == 'SSF':
+            queryset = queryset.filter(has_ssf=True)
+        elif benefit == 'AIA':
+            queryset = queryset.filter(has_aia=True)
+
+        return queryset
 
     def get_serializer_class(self):
         """Use simplified serializer for list view, full serializer for detail view."""
