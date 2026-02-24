@@ -108,6 +108,7 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'salary',
             'effective_date',
             'resign_reason',
+            'created_at',
             'hospital_choice_1',
             'hospital_choice_2',
             'hospital_choice_3',
