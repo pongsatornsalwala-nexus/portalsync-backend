@@ -51,7 +51,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         GET /api/employees/count/
         Returns total count of employees.
         """
-        count = self.queryset.count()
+        count = self.get_queryset.count()
         return Response({'count': count})
     
     @action(detail = False, methods = ['get'])
@@ -73,44 +73,44 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         today = now()
         month_start = today.replace(day = 1)
 
-        total = self.queryset.count()
+        total = self.get_queryset.count()
 
         # New joiners this month
-        new_joiners = self.queryset.filter(
+        new_joiners = self.get_queryset.filter(
             employment_date__gte = month_start,
             registration_type = 'REGISTER_IN'
         ).count()
 
         # Resignations this month
-        resignations = self.queryset.filter(
+        resignations = self.get_queryset.filter(
             updated_at__gte = month_start,
             registration_type = 'REGISTER_OUT'
         ).count()
 
         # Pending actions (not yet verified)
-        pending = self.queryset.exclude(status = 'REGISTERED').count()
+        pending = self.get_queryset.exclude(status = 'REGISTERED').count()
 
         # SSF queue counts
-        ssf_register_in = self.queryset.filter(
+        ssf_register_in = self.get_queryset.filter(
             has_ssf = True,
             registration_type = 'REGISTER_IN',
             status__in = ['IMPORTED', 'PENDING']
         ).count()
 
-        ssf_register_out = self.queryset.filter(
+        ssf_register_out = self.get_queryset.filter(
             has_ssf = True,
             registration_type = 'REGISTER_OUT',
             status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         # AIA queue counts
-        aia_register_in = self.queryset.filter(
+        aia_register_in = self.get_queryset.filter(
             has_aia = True,
             registration_type = 'REGISTER_IN',
             status__in = ['IMPORTED', 'PENDING']
         ).count()
 
-        aia_register_out = self.queryset.filter(
+        aia_register_out = self.get_queryset.filter(
             has_aia = True,
             registration_type = 'REGISTER_OUT',
             status__in = ['IMPORTED', 'PENDING']
@@ -139,9 +139,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         """
         worksite_id = request.query_params.get('worksite_id')
         if worksite_id:
-            employees = self.queryset.filter(worksite_id = worksite_id)
+            employees = self.get_queryset.filter(worksite_id = worksite_id)
         else:
-            employees = self.queryset.all()
+            employees = self.get_queryset.all()
 
         serializer = self.get_serializer(employees, many = True)
         return Response(serializer.data)
