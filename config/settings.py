@@ -150,8 +150,7 @@ STATIC_URL = '/static/'
 # NEW: Where to collect static files for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # NEW: WhiteNoise configuration for serving static files
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
