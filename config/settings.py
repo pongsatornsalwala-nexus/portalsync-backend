@@ -149,8 +149,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # NEW: Where to collect static files for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# NEW: WhiteNoise configuration for serving static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
