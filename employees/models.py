@@ -109,6 +109,15 @@ class Employee(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_IMPORTED)
     ssf_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="SSF registration status (null if not enrolled)")
     aia_status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True, blank=True, help_text="AIA registration status (null if not enrolled)")
+
+    ssf_exit_status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, null=True, blank=True,
+        help_text="SSF exit pipeline status (null if not exiting)"
+    )
+    aia_exit_status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, null=True, blank=True,
+        help_text="AIA exit pipeline status (null if not exiting)"
+    )
     
     # Additional Fields
     effective_date = models.DateField(null=True, blank=True, help_text="Date when benefit becomes effective")
@@ -220,6 +229,16 @@ class Employee(models.Model):
             self.aia_status = self.STATUS_IMPORTED
         elif not self.has_aia:
             self.aia_status = None
+
+        if self.is_exiting_ssf and self.ssf_exit_status is None:
+            self.ssf_exit_status = self.STATUS_IMPORTED
+        elif not self.is_exiting_ssf:
+            self.ssf_exit_status = None
+
+        if self.is_exiting_aia and self.aia_exit_status is None:
+            self.aia_exit_status = self.STATUS_IMPORTED
+        elif not self.is_exiting_aia:
+            self.aia_exit_status = None
 
         # Auto-archive logic updated to use REGISTERED
         if self.is_exiting_ssf and self.ssf_status == self.STATUS_REGISTERED and not self.has_ssf:
