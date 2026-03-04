@@ -22,6 +22,22 @@ class Hospital(models.Model):
     def __str__(self):
         return f"{self.name} ({self.province})"
 
+class HospitalStatus(models.Model):
+    """
+    Tracks whether a hospital is full (cannot accept new SSF registraitons).
+    Separate from Hospital so the core hospital data stays clean.
+    """
+    hospital = models.OneToOneField(
+        Hospital,
+        on_delete=models.CASCADE,
+        related_name='status'
+    )
+    is_full = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.hospital.name} - {'Full' if self.is_full else 'Available'}"
+
 class BenefitQueue(models.Model):
     """
     Tracks the processing queue for SSF and AIA benefit registrations.

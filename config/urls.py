@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework import routers
 from employees.views import EmployeeViewSet
 from worksites.views import WorksiteViewSet
-from benefits.views import HospitalViewSet
+from benefits.views import HospitalViewSet, toggle_hospital_full
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -33,6 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('api/benefits/', include('benefits.urls')),
     path('api/', include(router.urls)), # All API endpoints will be under /api/
+    path('api/hospitals/<int:hospital_id>/toggle_full/', toggle_hospital_full),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
