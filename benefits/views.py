@@ -16,7 +16,7 @@ class HospitalViewSet(viewsets.ModelViewSet):
     ViewSet for Hospital model.
     Automatically provides list, create, retrieve, update, and destroy acitons.
     """
-    queryset = Hospital.objects.selected_related('status').all()
+    queryset = Hospital.objects.select_related('status').all()
     serializer_class = HospitalSerializer
 
 # The decorator
