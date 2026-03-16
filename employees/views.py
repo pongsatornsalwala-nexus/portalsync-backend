@@ -312,6 +312,127 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                 {'error': f'Failed to process file: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+    @action(detail=False, methods=['post'])
+    def aia_entry_upload(self, request):
+        """
+        POST /api/employees/aia_entry_upload/
+        Reads an official AIA Entry (Addition) xlsx and creates or updates employees.
+        Datarows start at row 21. Dates are already A.D. - no Buddhist calendar conversion.
+        """
+        import openpyxl
+
+        uploaded_file = request.FILES.get('file')
+        if not uploaded_file:
+            return Response({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
+
+        worksite_id = request.data.get('worksite_id')
+        if not worksite_id:
+            return Response({'error': 'Worksite ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Helper: reassemble a date from 3 separate D/M/Y cells (all A.D.)
+        def assemble_date(daty, month, year):
+            try:
+                if not all([day, month, year]):
+                    return None
+                return f'{int(year):04d}-{int(month):02d}-{int(day):02d}'
+            except:
+                return None
+
+        # Helper: map AIA's Sex codes to the model's values
+        def parse_gender(val):
+            return 'male' if str(val).strip().upper() == 'M' else 'female'
+
+        # Helper: map AIA's Marital Status codes
+        def parse_marital(val):
+            mapping = {'S': 'single', 'M': 'married', 'D': 'divorced'}
+            return mapping.get(str(val).strip().upper())
+
+        try:
+            wb = openpyxl.load_workbook(uploaded_file)
+            ws = wb.active
+
+            created_count = 0
+            updated_count = 0
+            errors = []
+
+            # Row 21 onwards is where real employee data lives
+            for row_num in range(21, ws.max_row + 1):
+                try:
+                    id_card = ws.cell(row=row_num, column=11).value
+                    first_name = ws.cell(row=row_num, column=4).value
+
+                    # Skip blank rows - AIA froms always have lots of empty trailing
+                    if not first_name and not id_card:
+                        continue
+
+                    id_card = str(id_card).strip().replace('-', '') if id_card else None
+                    if not id_card:
+                        errors.append(f'Row {row_num}: Missing ID card number')
+                        continue
+
+                    employee_data = {
+                        'employee_no': str(ws.cell(row=row_num, column=1).value or '').strip(),
+                        'first_name': str(first_name).strip() if first_name else '',
+                        'last_name': str(ws.cell(row=row_num, column=5).value or '').strip(),
+                        'gender': parse_gender(ws.cell(row=row_num, column=6).value or ''),
+                        'marital_status': parse_marital(ws.cell(row=row_num, column=7).value),
+                        'date_of_birth': assemble_date(
+                            ws.cell(row=row_num, column=8).value,
+                            ws.cell(row=row_num, column=9).value,
+                            ws.cell(row=row_num, column=10).value,
+                        ),
+                        'nationality': str(ws.cell(row=row_num, column=12).value or '').strip(),
+                        'employment_date': assemble_date(
+                            ws.cell(row=row_num, column=13).value,
+                            ws.cell(row=row_num, column=14).value,
+                            ws.cell(row=row_num, column=15).value,
+                        ),
+                        'salary': ws.cell(row=row_num, column=16).value,
+                        'designation': str(ws.cell(row=row_num, column=17).value or '').strip(),
+                        'plan': str(ws.cell(row=row_num, column=18).value or '').strip(),
+                        'bank_name': str(ws.cell(row=row_num, column=19).value or '').strip(),
+                        'bank_account': str(ws.cell(row=row_num, column=20).value or '').strip(),
+                        'effective_date': assemble_date(
+                            ws.cell(row=row_num, column=25).value,
+                            ws.cell(row=row_num, column=26).value,
+                            ws.cell(row=row_num, column=27).value,
+                        ),
+                        # AIA Entry is always an addition (inbound) for AIA benefit
+                        'has_aia': True,
+                        'aia_status': 'IMPORTED',
+                        'registration_type': 'REGISTER_IN',
+                        'worksite_id': int(worksite_id),
+                    }
+
+                    # update_or_create: looks up by id_card, applies employee_data as defaults.
+                    # If found -> updates. If not found -> creates. Returns (object, created_bool).
+                    _, created = Employee.objects.update_or_create(
+                        id_card=id_card,
+                        defaults=employee_data,
+                    )
+
+                    if created:
+                        created_count += 1
+                    else:
+                        updated_count += 1
+                    
+                except Exception as e:
+                    errors.append(f'Row {row_num}: {str(e)}')
+                    continue
+
+            return Response({
+                'success': True,
+                'created_count': created_count,
+                'updated_count': updated_count,
+                'errors': errors if errors else None,
+            })
+
+        except Exception as e:
+            return Response(
+                {'error', f'Failed to process file: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     @action(detail=True, methods=['patch'])
     def upload_document(self, request, pk=None):
