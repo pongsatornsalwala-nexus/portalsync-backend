@@ -175,8 +175,34 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             file,
             content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = 'attachment;  filename="SSF_AIA_Bulk_Import_Template.xlsx"'
+        response['Content-Disposition'] = 'attachment;  filename="SSF_Entry.xlsx"'
 
+        return response
+
+    @action(detail=False, methods=['get'])
+    def download_aia_template(self, request):
+        import os
+        from django.http import FileResponse
+        from django.conf import settings
+
+        template_pate = os.path.join(
+            settings.BASE_DIR,
+            'templates',
+            'AIA_Entry.xlsx'
+        )
+
+        if not os.path.exists(template_path):
+            return Response(
+                {'error': 'Template file not found.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        file = open(template_path, 'rb')
+        response = FileResponse(
+            file,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename="AIA_Entry_Template.xlsx"'
         return response
 
     @action(detail=False, methods=['post'])
