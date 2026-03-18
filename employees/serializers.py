@@ -54,6 +54,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'hospital_choice_3',
             'marital_status',
             'wage_type',
+            'ssf_type',
             'passport',
             'designation',
             'national_id_file',
@@ -117,4 +118,5 @@ class EmployeeListSerializer(serializers.ModelSerializer):
             'hospital_choice_2',
             'hospital_choice_3',
             'wage_type',
+            'ssf_type',
         ]

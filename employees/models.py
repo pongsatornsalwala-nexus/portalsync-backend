@@ -127,6 +127,17 @@ class Employee(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    ssf_type = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+        choices=[
+            ('1-03', '1-03 (with hospitals)'),
+            ('1-03/1', '1-03/1 (no hospitals)'),
+        ],
+        help_text="SSF registration type"
+    )
+
     #SSF-specific Fields
     hospital_choice_1 = models.CharField(
         max_length = 200,

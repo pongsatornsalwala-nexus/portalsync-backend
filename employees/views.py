@@ -267,12 +267,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     last_name = ws.cell(row=row_num, column=4).value # D - นามสกุล
                     ssf_status_raw = ws.cell(row=row_num, column=5).value # E - SSF แจ้งเข้า
                     national_id = ws.cell(row=row_num, column=6).value # F - เลขประจำตัวประชาชน
-                    hospital1 = ws.cell(row=row_num, column=7).value # G - โรงพยาบาล 1
-                    hospital2 = ws.cell(row=row_num, column=8).value # H - โรงพยาบาล 2
-                    hospital3 = ws.cell(row=row_num, column=9).value # I - โรงพยาบาล 3
-                    dob = ws.cell(row=row_num, column=10).value # J - วันเกิด
-                    employment_date = ws.cell(row=row_num, column=11).value # K - วันเริ่มงาน
-                    aia_status_raw = ws.cell(row=row_num, column=12).value # L - AIA
+                    ssf_type_raw = ws.cell(row=row_num, column=7).value # G - ประเภท
+                    hospital1 = ws.cell(row=row_num, column=8).value # H - โรงพยาบาล 1
+                    hospital2 = ws.cell(row=row_num, column=9).value # I - โรงพยาบาล 2
+                    hospital3 = ws.cell(row=row_num, column=10).value # J - โรงพยาบาล 3
+                    dob = ws.cell(row=row_num, column=11).value # K - วันเกิด
+                    employment_date = ws.cell(row=row_num, column=12).value # L - วันเริ่มงาน
+                    aia_status_raw = ws.cell(row=row_num, column=13).value # M - AIA
 
                     # Skip empty rows
                     if not first_name or not national_id:
@@ -298,6 +299,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                     # Determine gender from prefix
                     gender = 'male' if prefix == 'mr' else 'female'
 
+                    # Parse ssf_type - strip whitespace just in case
+                    ssf_type = str(ssf_type_raw).strip() if ssf_type_raw else '1-03'
+
+                    # 1-03/1 means no hospital selection needed - clear them
+                    if ssf_type == '1-03/1':
+                        hospital1 = hospital2 = hospital3 = None
+
                     # Create employee
                     employee_data = {
                         'id_card': str(national_id).replace('-', ''),
@@ -315,6 +323,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                         'hospital_choice_1': hospital1,
                         'hospital_choice_2': hospital2,
                         'hospital_choice_3': hospital3,
+                        'ssf_type': ssf_type,
                         'ssf_status': ssf_status if benefit_type == 'SSF' else None,
                         'aia_status': aia_status if benefit_type == 'AIA' else None,
                     }
