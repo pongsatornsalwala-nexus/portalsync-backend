@@ -160,7 +160,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         template_path = os.path.join(
             settings.BASE_DIR,
             'templates',
-            'SSF AIA Bulk Import Template.xlsx'
+            'SSF_Entry.xlsx'
         )
 
         if not os.path.exists(template_path):
@@ -185,7 +185,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         from django.http import FileResponse
         from django.conf import settings
 
-        template_pate = os.path.join(
+        template_path = os.path.join(
             settings.BASE_DIR,
             'templates',
             'AIA_Entry.xlsx'
