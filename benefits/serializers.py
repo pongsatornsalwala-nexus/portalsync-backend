@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Hospital
+from .models import Hospital, AIAPlan
 
 # `ModelSerializer` is a shortcut provided by Django REST Framework
 # It automatically creates a serializer based on the model
@@ -23,3 +23,8 @@ class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
         fields = ['id', 'name', 'province', 'hospital_type', 'is_full']
+    
+class AIAPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AIAPlan
+        fields = ['id', 'name']

@@ -6,8 +6,8 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Hospital, HospitalStatus
-from .serializers import HospitalSerializer
+from .models import Hospital, HospitalStatus, AIAPlan
+from .serializers import HospitalSerializer, AIAPlanSerializer
 
 # Create your views here.
 
@@ -57,5 +57,9 @@ def hospital_list(request):
     hospitals = Hospital.objects.all()
     serializer = HospitalSerializer(hospitals, many = True)
     return Response(serializer.data)
+
+class AIAPlanViewSet(viewsets.ModelViewSet):
+    queryset = AIAPlan.objects.all()
+    serializer_class = AIAPlanSerializer
 
 # Serializer is a translator between Python objects and JSON

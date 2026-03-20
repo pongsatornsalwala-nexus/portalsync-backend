@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework import routers
 from employees.views import EmployeeViewSet
 from worksites.views import WorksiteViewSet
-from benefits.views import HospitalViewSet, toggle_hospital_full
+from benefits.views import HospitalViewSet, AIAPlanViewSet, toggle_hospital_full
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,6 +28,7 @@ router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet, basename = 'employee')
 router.register(r'worksites', WorksiteViewSet, basename = 'worksite')
 router.register(r'hospitals', HospitalViewSet, basename = 'hospital')
+router.register(r'aia-plans', AIAPlanViewSet, basename='aia-plan')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -72,3 +72,17 @@ class BenefitQueue(models.Model):
 
         benefit_str = " & ".join(benefit_types) if benefit_types else "No Benefits"
         return f"{self.employee.full_name} - {benefit_str} Queue"
+
+class AIAPlan(models.Model):
+    """
+    A catalog of available AIA insurance plans (e.g. "100 - Junior").
+    Plans are global and shared across all worksites.
+    """
+    name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
