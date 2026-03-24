@@ -88,32 +88,35 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         ).count()
 
         # Pending actions (not yet verified)
-        pending = self.get_queryset().exclude(status = 'REGISTERED').count()
+        pending = (
+            self.get_queryset().filter(has_ssf=True, ssf_activated=False, is_exiting_ssf=False).count() +
+            self.get_queryset().filter(has_aia=True, aia_activated=False, is_exiting_aia=False).count() +
+            self.get_queryset().filter(is_exiting_ssf=True, ssf_exit_status__in=['IMPORTED', 'PENDING']).count() +
+            self.get_queryset().filter(is_exiting_aia=True, aia_exit_status__in=['IMPORTED', 'PENDING']).count()
+        )
 
         # SSF queue counts
         ssf_register_in = self.get_queryset().filter(
             has_ssf = True,
-            registration_type = 'REGISTER_IN',
-            status__in = ['IMPORTED', 'PENDING']
+            ssf_activated = False,
+            is_exiting_ssf = False,
         ).count()
 
         ssf_register_out = self.get_queryset().filter(
-            has_ssf = True,
-            registration_type = 'REGISTER_OUT',
-            status__in = ['IMPORTED', 'PENDING']
+            is_exiting_ssf = True,
+            ssf_exit_status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         # AIA queue counts
         aia_register_in = self.get_queryset().filter(
             has_aia = True,
-            registration_type = 'REGISTER_IN',
-            status__in = ['IMPORTED', 'PENDING']
+            aia_activated = False,
+            is_exiting_aia = False,
         ).count()
 
         aia_register_out = self.get_queryset().filter(
-            has_aia = True,
-            registration_type = 'REGISTER_OUT',
-            status__in = ['IMPORTED', 'PENDING']
+            is_exiting_aia = True,
+            aia_exit_status__in = ['IMPORTED', 'PENDING']
         ).count()
 
         return Response({
