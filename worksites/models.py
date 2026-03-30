@@ -23,14 +23,16 @@ class Worksite(models.Model):
         max_length=10, choices=SCHEDULE_CHOICES, default='1st'
     )
     ssf_custom_date = models.DateField(null=True, blank=True)
-    ssf_resign_limit = models.IntegerField(default=15)
+    ssf_exit_schedule = models.CharField(max_length=10, choices=SCHEDULE_CHOICES, default='1st')
+    ssf_exit_custom_date = models.DateField(null=True, blank=True)
 
     # AIA registration schedule
     aia_registration_schedule = models.CharField(
         max_length=10, choices=SCHEDULE_CHOICES, default='1st'
     )
     aia_custom_date = models.DateField(null=True, blank=True)
-    aia_resign_limit = models.IntegerField(default=15)
+    aia_exit_schedule = models.CharField(max_length=10, choices=SCHEDULE_CHOICES, default='1st')
+    aia_exit_custom_date = models.DateField(null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
