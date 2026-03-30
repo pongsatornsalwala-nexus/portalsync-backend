@@ -4,6 +4,7 @@ SCHEDULE_CHOICES = [
     ('1st', 'Next Month 1st'),
     ('16th', 'Next Month 16th'),
     ('custom', 'Custom Date'),
+    ('today', 'Today'),
 ]
 
 class Worksite(models.Model):
