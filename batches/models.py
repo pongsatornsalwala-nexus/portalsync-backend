@@ -42,6 +42,7 @@ class RegistrationBatch(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name_plural = 'Registration Batches'
         # Prevent duplicate open batches for same worksite+benefit+type
         constraints = [
             models.UniqueConstraint(
