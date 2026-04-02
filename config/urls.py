@@ -22,11 +22,13 @@ from worksites.views import WorksiteViewSet
 from benefits.views import HospitalViewSet, AIAPlanViewSet, toggle_hospital_full
 from django.conf import settings
 from django.conf.urls.static import static
+from batches.views import RegistrationBatchViewSet
 
 # Create a router and register the viewsets
 router = routers.DefaultRouter()
 router.register(r'employees', EmployeeViewSet, basename = 'employee')
 router.register(r'worksites', WorksiteViewSet, basename = 'worksite')
+router.register(r'batches', RegistrationBatchViewSet, basename='batch')
 router.register(r'hospitals', HospitalViewSet, basename = 'hospital')
 router.register(r'aia-plans', AIAPlanViewSet, basename='aia-plan')
 
