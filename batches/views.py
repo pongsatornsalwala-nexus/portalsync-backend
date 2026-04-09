@@ -156,7 +156,7 @@ class RegistrationBatchViewSet(viewsets.ModelViewSet):
         try:
             with transaction.atomic():
                 # Stamp effective_date on every employee in the batch
-                batch.employee.all().update(
+                batch.employees.all().update(
                     effective_date=batch.registration_date
                 )
                 # Mark batch as SUBMITTED
