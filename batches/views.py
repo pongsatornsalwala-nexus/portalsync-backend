@@ -159,6 +159,19 @@ class RegistrationBatchViewSet(viewsets.ModelViewSet):
                 batch.employees.all().update(
                     effective_date=batch.registration_date
                 )
+
+                # Auto-activate (entry) or auto-archive (exit)
+                if batch.batch_type == 'REGISTER_IN':
+                    if batch.benefit == 'SSF':
+                        batch.employee.all().update(ssf_activated=True)
+                    else:
+                        batch.employees.all().update(aia_activated=True)
+                else: # REGISTER_OUT
+                    if batch.benefit == 'SSF':
+                        batch.employees.all().update(ssf_archived=True)
+                    else:
+                        batch.employees.all().update(aia_archived=True)
+
                 # Mark batch as SUBMITTED
                 batch.status = 'SUBMITTED'
                 batch.save()
