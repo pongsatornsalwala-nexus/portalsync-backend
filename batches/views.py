@@ -163,7 +163,7 @@ class RegistrationBatchViewSet(viewsets.ModelViewSet):
                 # Auto-activate (entry) or auto-archive (exit)
                 if batch.batch_type == 'REGISTER_IN':
                     if batch.benefit == 'SSF':
-                        batch.employee.all().update(ssf_activated=True)
+                        batch.employees.all().update(ssf_activated=True)
                     else:
                         batch.employees.all().update(aia_activated=True)
                 else: # REGISTER_OUT
