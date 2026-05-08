@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from django.db.models import Count, Q
 from .models import Employee
 from .serializers import EmployeeSerializer, EmployeeListSerializer
+from django.db import transaction
+from batches.models import RegistrationBatch
+from worksites.models import Worksite
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     """
@@ -521,5 +524,53 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         employee.save()
 
         # Return updated employee data
+        serializer = self.get_serializer(employee)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['patch'])
+    def transfer_worksite(self, request, pk=None):
+        """
+        PATCH /api/employees/{id}/transfer_worksite/
+        Body: { worksite_id: X }
+        Removes employee from open batches at old worksite,
+        then moves them to the new worksite.
+        """
+        employee = self.get_object()
+        new_worksite_id = request.data.get('worksite_id')
+
+        if not new_worksite_id:
+            return Response(
+                {'error': 'worksite_id is required'},
+                status = status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            new_worksite = Worksite.objects.get(id=new_worksite_id)
+        except Worksite.DoesNotExist:
+            return Response(
+                {'error': 'Worksite no found'},
+                status = status.HTTP_404_NOT_FOUND
+            )
+        
+        if employee.worksite_id == int(new_worksite_id):
+            return Response(
+                {'error': 'Employee is already at this worksite'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        with transaction.atomic():
+            # Remove from all open batches at current worksite
+            open_batches = RegistrationBatch.objects.filter(
+                worksite=employee.worksite,
+                status='OPEN',
+                employees=employee
+            )
+            for batch in open_batches:
+                batch.employees.remove(employee)
+
+            # Move to new worksite
+            employee.worksite = new_worksite
+            employee.save()
+        
         serializer = self.get_serializer(employee)
         return Response(serializer.data)
